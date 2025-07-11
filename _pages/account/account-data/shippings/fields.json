@@ -1,0 +1,109 @@
+[
+  {
+    "id": 1,
+    "name": "name",
+    "label": "Naziv adrese",
+    "placeholder": "Unesite naziv adrese",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 2,
+    "name": "first_name", 
+    "label": "Ime",
+    "placeholder": "Unesite ime",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 3,
+    "name": "last_name",
+    "label": "Prezime",
+    "placeholder": "Unesite prezime",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 4,
+    "name": "email",
+    "label": "Email",
+    "placeholder": "Unesite email",
+    "type": "email",
+    "required": true
+  },
+  {
+    "id": 5,
+    "name": "phone",
+    "label": "Telefon",
+    "placeholder": "Unesite telefon",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 6,
+    "name": "id_country",
+    "label": "Država",
+    "placeholder": "Izaberite državu",
+    "options": [],
+    "type": "select",
+    "fill": "/customers/billing-address/ddl/id_country",
+    "required":true
+  },
+  {
+    "id": 7,
+    "name": "town_name",
+    "label": "Grad",
+    "placeholder": "Unesite grad",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 8,
+    "name": "address",
+    "label": "Adresa",
+    "placeholder": "Unesite adresu",
+    "type": "text",
+    "required": true
+  },
+  {
+  "id": 10,
+  "name": "object_number",
+  "label": "Broj objekta",
+  "placeholder": "Unesite broj objekta",
+  "type": "text",
+  "required": true
+},
+  {
+    "id": 11,
+    "name": "floor",
+    "label": "Sprat",
+    "placeholder": "Unesite sprat",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 12,
+    "name": "apartment_number",
+      "label": "Broj stana",
+    "placeholder": "Unesite broj stana",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 9,
+    "name": "zip_code",
+    "label": "Poštanski broj",
+    "placeholder": "Unesite poštanski broj",
+    "type": "text",
+    "required": true
+  },
+
+  {
+    "id": 11,
+    "name": "set_default",
+    "label": "Postavi kao podrazumevanu adresu",
+    "placeholder": "Postavi kao podrazumevanu adresu",
+    "type": "checkbox",
+    "required": false
+  }
+]

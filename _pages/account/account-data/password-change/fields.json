@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "password",
+    "label": "Nova lozinka",
+    "placeholder": "Unesite novu lozinku",
+    "type": "password",
+    "required": true  
+  },
+  {
+    "id": 2,
+    "name": "sent_mail",
+    "label": "Pošalji izmenjenu lozinku na e-mail",
+      "placeholder": "Pošalji izmenjenu lozinku na e-mail",
+    "type": "checkbox",
+    "required": false
+  }
+]

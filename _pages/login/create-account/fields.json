@@ -1,0 +1,73 @@
+[
+  {
+    "id": 1,
+    "name": "first_name",
+    "required": true,
+    "label": "Ime",
+    "placeholder": "Unesite ime",
+    "type": "text"
+  },
+  {
+    "id": 2,
+    "name": "last_name",
+    "required": true,
+    "label": "Prezime",
+    "placeholder": "Unesite prezime",
+    "type": "text"
+  },
+  {
+    "id": 3,
+    "name": "phone",
+    "label": "Telefon",
+    "placeholder": "Unesite telefon",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 4,
+    "name": "gender",
+    "label": "Pol",
+    "placeholder": "Izaberite pol",
+    "type": "select",
+    "options": [{
+        "id": "male",
+        "name": "Muški"
+    },{
+        "id": "female",
+        "name": "Ženski"
+    }],
+    "required": true
+  },
+  {
+    "id": 5,
+    "name": "birth_date",
+    "label": "Datum rođenja",
+    "placeholder": "Unesite datum rođenja",
+    "type": "date",
+    "required": true
+  },
+  {
+    "id": 6,
+    "name": "email",
+    "label": "Email",
+    "placeholder": "Unesite email",
+    "type": "email",
+    "required": true
+  },
+  {
+    "id": 7,
+    "name": "password",
+    "label": "Lozinka",
+    "placeholder": "Unesite lozinku",
+    "type": "password",
+    "required": true
+  },
+  {
+    "id": 8,
+    "name": "accept_terms",
+    "label": "Prihvatam uslove korišćenja",
+    "placeholder": "Prihvatam uslove korišćenja",
+    "type": "checkbox",
+    "required": true
+  }
+]

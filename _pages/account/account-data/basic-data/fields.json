@@ -1,0 +1,60 @@
+[
+  {
+    "id": 1,
+    "name": "first_name",
+    "label": "Ime",
+    "placeholder": "Unesite ime",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 2,
+    "name": "last_name",
+    "label": "Prezime",
+    "placeholder": "Unesite prezime",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 3,
+    "name": "email",
+    "label": "Email",
+    "placeholder": "Unesite email",
+    "type": "email",
+    "required": true
+  },
+  {
+    "id": 4,
+    "name": "phone",
+    "label": "Telefon",
+    "placeholder": "Unesite telefon",
+    "type": "text",
+    "required": true
+  },
+  {
+    "id": 5,
+    "name": "gender",
+    "label": "Pol",
+    "placeholder": "Pol",
+    "type": "select",
+    "options": [
+      {
+        "id": "male",
+        "name": "Muški"
+      },
+      {
+        "id": "female",
+        "name": "Ženski"
+      }
+    ],
+    "required": true
+  },
+  {
+    "id": 6,
+    "name": "birth_date",
+    "label": "Datum rođenja",
+    "placeholder": "Datum rođenja",
+    "type": "date",
+    "required": true
+  }
+]

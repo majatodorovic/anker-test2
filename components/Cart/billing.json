@@ -1,0 +1,83 @@
+[
+  {
+    "id": 2,
+    "name": "first_name_billing",
+    "label": "Ime",
+    "placeholder": "Unesite ime",
+    "type": "text", 
+    "required": true,
+    "className": "col-span-2"
+  },
+  {
+    "id": 3,
+    "name": "last_name_billing",
+    "label": "Prezime",
+    "placeholder": "Unesite prezime",
+    "type": "text",
+    "required": true,
+    "className": "col-span-2"
+  },
+  {
+    "id": 4,
+    "name": "phone_billing",
+    "label": "Telefon",
+    "placeholder": "Unesite telefon",
+    "type": "text",
+    "required": true,
+    "className": "col-span-2"
+  },
+  {
+    "id": 5,
+    "name": "email_billing",
+    "label": "Email",
+    "placeholder": "Unesite email",
+    "type": "text",
+    "required": true,
+    "className": "col-span-2"
+  },
+  {
+    "id": 6,
+    "name": "address_billing",
+    "label": "Adresa",
+    "placeholder": "Unesite adresu",
+    "type": "text",
+    "required": true,
+    "className": "col-span-3"
+  },
+  {
+    "id": 7,
+    "name": "object_number_billing",
+    "label": "Broj",
+    "placeholder": "Unesite broj",
+    "type": "text",
+    "required": true,
+    "className": "col-span-1"
+  },
+  {
+    "id": 8,
+    "name": "town_name_billing",
+    "label": "Grad",
+    "placeholder": "Unesite grad",
+    "type": "text",
+    "required": true,
+    "className": "col-span-2"
+  },
+  {
+    "id": 9,
+    "name": "zip_code_billing",
+    "label": "Poštanski broj",
+    "placeholder": "Unesite poštanski broj",
+    "type": "text",
+    "required": true,
+    "className": "col-span-2"
+  },
+  {
+    "id": 12,
+    "name": "note_billing",
+    "label": "Napomena",
+    "placeholder": "Unesite napomenu",
+    "type": "textarea",
+    "required": false,
+    "className": "col-span-4"
+  }
+]
