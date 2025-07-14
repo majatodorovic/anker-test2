@@ -69,6 +69,23 @@ export const useLandingPages = () => {
   });
 };
 
+export const useActionProducts = (page, limit = 10, filters = [], sort) => {
+  return useQuery({
+    queryKey: ["action-products", page, limit, filters, sort],
+    queryFn: () => {
+      const payload = {
+        page,
+        limit,
+        filters,
+        render: true,
+        ...(sort ? { sort } : {}),
+      };
+      return LIST("/products/section/list/action", payload);
+    },
+    keepPreviousData: true,
+  });
+};
+
 /**
  * Custom hook to fetch basic data for a landing page by its slug.
  *
@@ -323,7 +340,7 @@ export const useRemoveFromWishlist = () => {
 };
 
 //hook za search, proslediti searchTerm inicijalno pri pozivu hook-a i pri pozivanju funkcije
-export const useSearch = ({ searchTerm, isSearchPage = false }) => {
+export const useSearch = ({ searchTerm, isSearchPage = false, page = 1, limit = 10 }) => {
   switch (isSearchPage) {
     case false:
       return useQuery({
@@ -342,12 +359,14 @@ export const useSearch = ({ searchTerm, isSearchPage = false }) => {
 
     case true:
       return useSuspenseQuery({
-        queryKey: [{ search: searchTerm }],
+        queryKey: ["search", { search: searchTerm }, page, limit],
         queryFn: async () => {
           if (searchTerm?.length >= 3) {
             return await LIST("/products/search/list", {
               search: searchTerm,
-            }).then((res) => res?.payload?.items);
+              page,
+              limit,
+            }).then((res) => res?.payload);
           } else {
             return [];
           }
@@ -508,6 +527,8 @@ export const useCategoryFilters = ({
   });
 };
 
+//hook za dobijanje artikala iz kategorije, proslediti slug kategorije, page,limit,sort i selektovane filtere
+
 export const useCategoryProducts = ({
   slug,
   page,
@@ -521,71 +542,86 @@ export const useCategoryProducts = ({
   isSection,
 }) => {
   const { current: isMounted } = useIsMounted();
-  const pagination_type = process.env["PAGINATION_TYPE"];
-
-  const isValidSlug = slug && typeof slug === "string" && slug.trim() !== "";
+  let pagination_type = process.env["PAGINATION_TYPE"];
 
   switch (pagination_type) {
     case "pagination": {
       return useSuspenseQuery({
         queryKey: [
           "categoryProducts",
-          { slug, page, limit, sort, selectedFilters: filterKey, render },
+          {
+            slug: slug,
+            page: page,
+            limit: limit,
+            sort: sort,
+            selectedFilters: filterKey,
+            render: render,
+          },
         ],
         queryFn: async () => {
-          if (!isValidSlug) return [];
-
+          //vadimo filtere iz URL koji su prethodno selektovani i pushovani sa router.push()
           const selectedFilters_tmp = (filterKey ?? "::")
             ?.split("::")
             ?.map((filter) => {
-              const [column, selected] = filter?.split("=") ?? ["", undefined];
-              const selectedValues = selected?.split("_");
+              const splitted = filter ? filter.split("=") : ["", undefined];
+              const [column, selected] = splitted;
+              const selectedValues = selected ? selected.split("_") : undefined;
 
               return {
                 column,
                 value: {
                   selected: column?.includes("cena")
-                    ? [Number(selectedValues?.[0]), Number(selectedValues?.[1])]
+                    ? [Number(selectedValues[0]), Number(selectedValues[1])]
                     : selectedValues,
                 },
               };
             });
 
-          const [field, direction] = (sort ?? "_").split("_");
-          const sortObj = { field, direction };
+          //radimo isto za sort
+          const sort_tmp = (sort ?? "_")?.split("_");
+          const sortObj = {
+            field: sort_tmp[0],
+            direction: sort_tmp[1],
+          };
 
-          const res = await LIST(
+          return await LIST(
             isSection
               ? `/products/section/list/${slug}`
               : `/products/category/list/${slug}`,
             {
-              page,
-              limit,
+              page: page,
+              limit: limit,
               sort: sortObj,
-              filters: selectedFilters_tmp?.every((col) => col?.column !== "")
+              filters: selectedFilters_tmp?.every(
+                (column) => column?.column !== "",
+              )
                 ? selectedFilters_tmp
                 : [],
-              render,
+              render: render,
             },
-          );
-
-          if (isMounted) {
-            if (
-              selectedFilters_tmp?.every((col) => col?.column !== "") &&
-              setSelectedFilters
-            ) {
-              setSelectedFilters(selectedFilters_tmp);
+          ).then((res) => {
+            //na kraju setujemo state za filtere i sort, da znamo koji su selektovani
+            if (isMounted) {
+              if (
+                selectedFilters_tmp?.every((column) => column?.column !== "") &&
+                setSelectedFilters
+              ) {
+                setSelectedFilters(selectedFilters_tmp);
+              }
+              if (setSort) {
+                setSort(sortObj);
+              }
+              if (setIsLoadingMore) {
+                setIsLoadingMore(false);
+              }
             }
-            if (setSort) setSort(sortObj);
-            if (setIsLoadingMore) setIsLoadingMore(false);
-          }
 
-          return res?.payload;
+            return res?.payload;
+          });
         },
         refetchOnWindowFocus: false,
       });
     }
-
     case "infinite_scroll": {
       return useInfiniteQuery({
         queryKey: [
@@ -593,16 +629,15 @@ export const useCategoryProducts = ({
           { slug, limit, sort, selectedFilters: filterKey, render },
         ],
         queryFn: async ({ pageParam = 1 }) => {
-          if (!isValidSlug) return [];
-
+          // Parse filters
           const selectedFilters_tmp = (filterKey ?? "::")
             ?.split("::")
             ?.filter(Boolean)
             ?.map((filter) => {
-              const [column, selected] = filter?.split("=") ?? ["", undefined];
+              const splitted = filter ? filter.split("=") : ["", undefined];
+              const [column, selected] = splitted;
               if (!column || !selected) return null;
-              const selectedValues = selected?.split("_");
-
+              const selectedValues = selected ? selected.split("_") : undefined;
               return {
                 column,
                 value: {
@@ -614,9 +649,14 @@ export const useCategoryProducts = ({
             })
             .filter(Boolean);
 
-          const [field, direction] = (sort ?? "_").split("_");
-          const sortObj = { field, direction };
+          // Parse sorting
+          const sort_tmp = (sort ?? "_")?.split("_");
+          const sortObj = {
+            field: sort_tmp[0] ?? "",
+            direction: sort_tmp[1] ?? "asc",
+          };
 
+          // Fetch the data
           const res = await LIST(
             isSection
               ? `/products/section/list/${slug}`
@@ -632,6 +672,7 @@ export const useCategoryProducts = ({
             },
           );
 
+          // Update state if necessary
           if (isMounted) {
             if (
               selectedFilters_tmp?.every((col) => col?.column !== "") &&
@@ -639,84 +680,113 @@ export const useCategoryProducts = ({
             ) {
               setSelectedFilters(selectedFilters_tmp);
             }
-            if (setSort) setSort(sortObj);
-            if (setIsLoadingMore) setIsLoadingMore(false);
+            if (setSort) {
+              setSort(sortObj);
+            }
+
+            if (setIsLoadingMore) {
+              setIsLoadingMore(false);
+            }
           }
 
-          return res?.payload;
+          return res?.payload; // Ensure payload is valid
         },
         getNextPageParam: (lastPage, allPages) => {
           if (lastPage?.length < limit) return undefined;
           return allPages.length + 1;
         },
-        getPreviousPageParam: (_, allPages) => {
+        getPreviousPageParam: (firstPage, allPages) => {
           return allPages.length - 1;
         },
       });
     }
-
     case "load_more": {
       return useSuspenseQuery({
         queryKey: [
           "categoryProducts",
-          { slug, page, limit, sort, selectedFilters: filterKey, render },
+          {
+            slug: slug,
+            page: page,
+            limit: limit,
+            sort: sort,
+            selectedFilters: filterKey,
+            render: render,
+          },
         ],
         queryFn: async () => {
-          if (!isValidSlug) return [];
+          try {
+            //vadimo filtere iz URL koji su prethodno selektovani i pushovani sa router.push()
+            const selectedFilters_tmp = (filterKey ?? "::")
+              ?.split("::")
+              ?.map((filter) => {
+                const splitted = filter ? filter.split("=") : ["", undefined];
+                const [column, selected] = splitted;
+                const selectedValues = selected
+                  ? selected.split("_")
+                  : undefined;
 
-          const selectedFilters_tmp = (filterKey ?? "::")
-            ?.split("::")
-            ?.map((filter) => {
-              const [column, selected] = filter?.split("=") ?? ["", undefined];
-              const selectedValues = selected?.split("_");
+                return {
+                  column,
+                  value: {
+                    selected: column?.includes("cena")
+                      ? [Number(selectedValues[0]), Number(selectedValues[1])]
+                      : selectedValues,
+                  },
+                };
+              });
 
-              return {
-                column,
-                value: {
-                  selected: column?.includes("cena")
-                    ? [Number(selectedValues?.[0]), Number(selectedValues?.[1])]
-                    : selectedValues,
-                },
-              };
+            //radimo isto za sort
+            const sort_tmp = (sort ?? "_")?.split("_");
+            const sortObj = {
+              field: sort_tmp?.[0],
+              direction: sort_tmp?.[1],
+            };
+
+            return await LIST(
+              isSection
+                ? `/products/section/list/${slug}`
+                : `/products/category/list/${slug}`,
+              {
+                page: 1,
+                limit: limit,
+                sort: sortObj,
+                filters: selectedFilters_tmp?.every(
+                  (column) => column?.column !== "",
+                )
+                  ? selectedFilters_tmp
+                  : [],
+                render: render,
+              },
+            ).then((res) => {
+              //na kraju setujemo state za filtere i sort, da znamo koji su selektovani
+              if (isMounted) {
+                if (
+                  selectedFilters_tmp?.every(
+                    (column) => column?.column !== "",
+                  ) &&
+                  setSelectedFilters
+                ) {
+                  setSelectedFilters(selectedFilters_tmp);
+                }
+                if (setSort) {
+                  setSort(sortObj);
+                }
+                if (setIsLoadingMore) {
+                  setIsLoadingMore(false);
+                }
+              }
+
+              return res?.payload;
             });
-
-          const [field, direction] = (sort ?? "_").split("_");
-          const sortObj = { field, direction };
-
-          const res = await LIST(
-            isSection
-              ? `/products/section/list/${slug}`
-              : `/products/category/list/${slug}`,
-            {
-              page: 1,
-              limit,
-              sort: sortObj,
-              filters: selectedFilters_tmp?.every((col) => col?.column !== "")
-                ? selectedFilters_tmp
-                : [],
-              render,
-            },
-          );
-
-          if (isMounted) {
-            if (
-              selectedFilters_tmp?.every((col) => col?.column !== "") &&
-              setSelectedFilters
-            ) {
-              setSelectedFilters(selectedFilters_tmp);
-            }
-            if (setSort) setSort(sortObj);
-            if (setIsLoadingMore) setIsLoadingMore(false);
+          } catch (error) {
+            return error;
           }
-
-          return res?.payload;
         },
         refetchOnWindowFocus: false,
       });
     }
   }
 };
-
 
 //hook za dobijanje proizvoda na detaljnoj strani
 export const useProduct = ({ slug, id }) => {
@@ -944,12 +1014,13 @@ export const useOrder = ({ order_token }) => {
 };
 
 //hook za dobijanje novih proizvoda
-export const useNewProducts = (render = true) => {
+export const useNewProducts = (page = 1, limit = 10) => {
   return useSuspenseQuery({
-    queryKey: ["newProducts"],
+    queryKey: ["newProducts", page, limit],
     queryFn: async () => {
       return await LIST(`/products/new-in/list`, {
-        render: render,
+        page,
+        limit,
         sort: {
           field: "new",
           direction: "desc",

@@ -3,7 +3,7 @@ import Link from "next/link";
 export const CartNoItems = () => {
   return (
     <div className="sectionPaddingY flex flex-col items-center justify-center bg-white text-center">
-      <div className="bg-lightGray border p-10">
+      <div className="border bg-lightGray p-10">
         <div className="text-center">
           <span className="text-2xl font-medium">Vaša korpa</span>
         </div>
@@ -28,7 +28,16 @@ export const CartNoItems = () => {
               </a>
               .
             </li>
-            <li>- Pogledajte uputstvo za pomoć pri kupovini.</li>
+            <li>
+              - Pogledajte uputstvo za{" "}
+              <Link
+                href="/strana/kako-kupiti"
+                className="text-primary underline"
+              >
+                pomoć pri kupovini
+              </Link>
+              .
+            </li>
           </ul>
         </div>
       </div>

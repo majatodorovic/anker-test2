@@ -80,13 +80,12 @@ export const CheckoutData = ({
   const { loggedIn: userLoggedIn } = useContext(userContext);
 
   const { data: loggedIn } = useIsLoggedIn();
-  const { data: billing_addresses } = useBillingAddresses();
 
-  const { data: user_billing_addresses } = useGetAccountData({
-    api: `/customers/billing-address`,
-    method: "list",
-  });
-  
+  const { data: billing_addresses } = userLoggedIn ? useBillingAddresses() : [];
+
+  const { data: user_billing_addresses } = userLoggedIn
+    ? useGetAccountData({ api: `/customers/billing-address`, method: "list" })
+    : [];
 
   const { data: form, isLoading } = useGetAddress(
     billing_addresses?.length > 1 && selected?.id

@@ -27,6 +27,7 @@ const NavigationMobile = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const [expandedBrands, setExpandedBrands] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -88,6 +89,15 @@ const NavigationMobile = () => {
   const categoriesMain = [
     { name: "Novo", slug: "/novo" },
     { name: "Kontakt", slug: "/kontakt" },
+    { name: "Akcija", slug: "/akcija" },
+  ];
+
+  const brands = [
+    { name: "Anker", slug: "/brend/anker" },
+    { name: "Soundcore", slug: "/brend/soundcore" },
+    { name: "Eufy", slug: "/brend/eufy" },
+    { name: "Nebula", slug: "/brend/nebula" },
+    { name: "Anker Solix", slug: "/brend/anker-solix" },
   ];
 
   const handleCategoryClick = (category) => {
@@ -102,6 +112,10 @@ const NavigationMobile = () => {
     } else {
       setExpandedCategory(category.id);
     }
+  };
+
+  const handleBrandsClick = () => {
+    setExpandedBrands(!expandedBrands);
   };
 
   return (
@@ -263,63 +277,109 @@ const NavigationMobile = () => {
         </div>
 
         <div className="mx-auto mt-5 flex w-[95%] flex-col gap-3">
-          {(categories ?? [])?.map((category) => {
-            const isExpanded = expandedCategory === category?.id;
-            return (
-              <div key={category?.id} className="flex flex-col">
-                <div
-                  className="flex flex-row items-center justify-between"
-                  onClick={() => handleCategoryClick(category)}
-                >
-                  <p
-                    className={isExpanded ? `text-base font-bold` : `text-base`}
+          {(categories ?? [])
+            ?.filter((category) => category?.name !== "Brendovi")
+            ?.map((category) => {
+              const isExpanded = expandedCategory === category?.id;
+              return (
+                <div key={category?.id} className="flex flex-col">
+                  <div
+                    className="flex flex-row items-center justify-between"
+                    onClick={() => handleCategoryClick(category)}
                   >
-                    {category?.name}
-                  </p>
-                  {category?.children?.length > 0 && (
-                    <Image
-                      src="/icons/right-chevron.png"
-                      width={16}
-                      height={16}
-                      alt="chevron"
-                      className={`h-auto w-4 transition-transform duration-300 ${
-                        isExpanded ? "rotate-90" : ""
-                      }`}
-                    />
+                    <p
+                      className={
+                        isExpanded ? `text-base font-bold` : `text-base`
+                      }
+                    >
+                      {category?.name}
+                    </p>
+                    {category?.children?.length > 0 && (
+                      <Image
+                        src="/icons/right-chevron.png"
+                        width={16}
+                        height={16}
+                        alt="chevron"
+                        className={`h-auto w-4 transition-transform duration-300 ${
+                          isExpanded ? "rotate-90" : ""
+                        }`}
+                      />
+                    )}
+                  </div>
+                  {isExpanded && category?.children?.length > 0 && (
+                    <div className="ml-4 mt-3 flex flex-col gap-2">
+                      <Link
+                        href={`/${category?.link?.link_path}`}
+                        onClick={() => setMenuOpen(false)}
+                        className="text-base font-normal text-primary hover:text-primary/80"
+                      >
+                        Pogledajte sve
+                      </Link>
+                      {category.children.map((subCategory) => (
+                        <div
+                          key={subCategory.id}
+                          className="flex items-center justify-between"
+                          onClick={() => {
+                            if (subCategory?.link?.link_path) {
+                              router.push(`/${subCategory.link.link_path}`);
+                              setMenuOpen(false);
+                            }
+                          }}
+                        >
+                          <span className="text-base">{subCategory.name}</span>
+                          {subCategory?.children?.length > 0 && (
+                            <Image
+                              src="/icons/right-chevron.png"
+                              width={16}
+                              height={16}
+                              alt="chevron"
+                              className="h-auto w-4"
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
-                {isExpanded && category?.children?.length > 0 && (
-                  <div className="ml-4 mt-3 flex flex-col gap-2">
-                    {category.children.map((subCategory) => (
-                      <div
-                        key={subCategory.id}
-                        className="flex items-center justify-between"
-                        onClick={() => {
-                          if (subCategory?.link?.link_path) {
-                            router.push(`/${subCategory.link.link_path}`);
-                            setMenuOpen(false);
-                          }
-                        }}
-                      >
-                        <span className="text-base">{subCategory.name}</span>
-                        {subCategory?.children?.length > 0 && (
-                          <Image
-                            src="/icons/right-chevron.png"
-                            width={16}
-                            height={16}
-                            alt="chevron"
-                            className="h-auto w-4"
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
 
+        <div className="mx-auto mt-3 flex w-[95%] flex-col border-t pt-3">
+          <div
+            className="flex flex-row items-center justify-between"
+            onClick={handleBrandsClick}
+          >
+            <p className={expandedBrands ? `text-base font-bold` : `text-base`}>
+              Brendovi
+            </p>
+            <Image
+              src="/icons/right-chevron.png"
+              width={16}
+              height={16}
+              alt="chevron"
+              className={`h-auto w-4 transition-transform duration-300 ${
+                expandedBrands ? "rotate-90" : ""
+              }`}
+            />
+          </div>
+          {expandedBrands && (
+            <div className="ml-4 mt-3 flex flex-col gap-2">
+              {(brands ?? [])?.map((brand) => (
+                <Link
+                  key={brand?.name}
+                  onClick={() => {
+                    setMenuOpen(false);
+                  }}
+                  href={`${brand?.slug}`}
+                  className="text-base"
+                >
+                  {brand?.name}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
         <div className="mx-auto mt-3 flex w-[95%] flex-col gap-3 border-t pt-3">
           {(categoriesMain ?? [])?.map((category) => (
             <Link

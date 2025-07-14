@@ -1,16 +1,7 @@
 import { Suspense } from "react";
 import ActionProductsPage from "./components/ActionProductsPage";
-import { list } from "@/api/api";
 
-const getActionProducts = () => {
-  return list("/products/section/list/action").then(
-    (res) => res?.payload?.items,
-  );
-};
-
-const Akcija = async () => {
-  const actionProducts = await getActionProducts();
-
+const Akcija = () => {
   return (
     <Suspense
       fallback={
@@ -28,7 +19,7 @@ const Akcija = async () => {
         </div>
       }
     >
-      <ActionProductsPage actionProducts={actionProducts} />
+      <ActionProductsPage />
     </Suspense>
   );
 };

@@ -13,25 +13,18 @@ import Image from "next/image";
  */
 
 const ApiPagination = ({ pagination }) => {
-  // Hookovi uvek pozvani, sa sigurnim početnim stanjem
-  const [currentPage, setCurrentPage] = useState(pagination?.selected_page ?? 1);
-
-  useEffect(() => {
-    if (pagination) {
-      setCurrentPage(pagination.selected_page);
-    }
-  }, [
-    pagination?.selected_page,
-    pagination?.total_pages,
-    pagination?.total_items,
-    pagination?.items_per_page,
-  ]);
-
   if (!pagination) return false;
 
-  const { selected_page, total_pages, total_items, items_per_page } = pagination;
+  const { selected_page, total_pages, total_items, items_per_page } =
+    pagination;
 
   if (total_pages < 2) return false;
+
+  const [currentPage, setCurrentPage] = useState(selected_page);
+
+  useEffect(() => {
+    setCurrentPage(selected_page);
+  }, [selected_page, total_pages, total_items, items_per_page]);
 
   // Updates the current page state and modifies the URL with the new page parameter.
   const handlePageChange = (page) => {
@@ -43,7 +36,7 @@ const ApiPagination = ({ pagination }) => {
     window.history.pushState({}, "", currentUrl);
   };
 
-  // Generates an array of page numbers - first and last pages, current page, ellipses (...)
+  //Generates an array of page numbers - first and last pages, current page, ellipses (...)
   const generatePages = () => {
     const pages = [];
     const delta = 2;

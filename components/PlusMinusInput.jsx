@@ -22,14 +22,25 @@ const PlusMinusInput = ({
   maxAmount,
   isDetails,
 }) => {
-  // Hookovi uvek pozvani na početku komponente:
+  if (!displayComponent) return <></>;
+
   const allow_decimals = behaviours?.display.allow_decimals;
   const default_loop_quantity = behaviours?.default_loop_quantity;
+
+  const showError = () => {
+    toast.warn(`${quantityError()}`, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+    });
+    return;
+  };
 
   const intQuantity = allow_decimals ? quantity : Math.floor(quantity);
   const [tempValue, setTempValue] = useState(intQuantity);
   const [timeoutValue, setTimeoutValue] = useState(0);
-  const [config, setConfig] = useState();
 
   useEffect(() => {
     if (quantity === 0) return;
@@ -43,13 +54,17 @@ const PlusMinusInput = ({
     }
   }, [quantity, maxAmount]);
 
+  const [config, setConfig] = useState();
+
   useEffect(() => {
     if (typeof document !== "undefined") {
-      const inventory_config = localStorage.getItem("configuration_inventories");
+      const inventory_config = localStorage.getItem(
+        "configuration_inventories",
+      );
       if (inventory_config) {
         let temp = JSON.parse(inventory_config);
         temp = temp?.filter(
-          (item) => item?.slug === "check_requested_inventory_product_quantity"
+          (item) => item?.slug === "check_requested_inventory_product_quantity",
         );
         if (temp?.length > 0) {
           setConfig(Boolean(Number(temp[0]?.value)));
@@ -91,21 +106,7 @@ const PlusMinusInput = ({
     }, timeoutValue);
 
     return () => clearTimeout(handler);
-  }, [tempValue, quantity, default_loop_quantity, setQuantity, timeoutValue]);
-
-  // Sada vršimo proveru displayComponent NAKON hook-ova:
-  if (!displayComponent) return null;
-
-  const showError = () => {
-    toast.warn(`${quantityError()}`, {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-    });
-    return;
-  };
+  }, [tempValue]);
 
   const handleChange = (e) => {
     if (quantityError()) return showError();
@@ -123,7 +124,11 @@ const PlusMinusInput = ({
     }
   };
 
-  const countQuantity = ({ defaultLoopQuantity, currentQuantity, isIncreased }) => {
+  const countQuantity = ({
+    defaultLoopQuantity,
+    currentQuantity,
+    isIncreased,
+  }) => {
     if (quantityError()) return showError();
 
     setTimeoutValue(0);
@@ -157,28 +162,20 @@ const PlusMinusInput = ({
 
   return (
     <div
-      className={`flex items-center ${
-        isDetails ? "flex-col !items-start gap-2" : ""
-      }`}
+      className={`flex items-center ${isDetails ? "flex-col !items-start gap-2" : ""}`}
     >
       {label && (
         <span
-          className={`text-lg font-light ${
-            isDetails ? "!text-base font-normal" : ""
-          }`}
+          className={`text-lg font-light ${isDetails ? "!text-base font-normal" : ""}`}
         >
           Količina:&nbsp;
         </span>
       )}
       <div
-        className={`flex items-stretch bg-white ${
-          isDetails ? "w-28 border border-gray-400 py-1" : "w-[60px] p-0"
-        }`}
+        className={`flex items-stretch bg-white ${isDetails ? "w-28 border border-gray-400 py-1" : "w-[60px] p-0"}`}
       >
         <button
-          className={`flex shrink-0 cursor-pointer items-center justify-center text-[0.9rem] ${
-            isDetails ? "w-8 !text-gray-400" : "w-4"
-          }`}
+          className={`flex shrink-0 cursor-pointer items-center justify-center text-[0.9rem] ${isDetails ? "w-8 !text-gray-400" : "w-4"}`}
           onClick={() =>
             countQuantity({
               defaultLoopQuantity: default_loop_quantity,
@@ -191,16 +188,12 @@ const PlusMinusInput = ({
         </button>
         <input
           type={`text`}
-          className={`w-full border-0 bg-inherit px-1 text-center text-[0.9rem] font-normal focus:outline-none focus:ring-0 ${
-            isDetails ? "py-1 !text-gray-400" : "p-0"
-          }`}
+          className={`w-full border-0 bg-inherit px-1 text-center text-[0.9rem] font-normal focus:outline-none focus:ring-0 ${isDetails ? "py-1 !text-gray-400" : "p-0"}`}
           value={tempValue === 0 ? 1 : tempValue}
           onChange={handleChange}
         />
         <button
-          className={`flex shrink-0 cursor-pointer items-center justify-center text-[0.9rem] ${
-            isDetails ? "w-8 !text-gray-400" : "w-4"
-          }`}
+          className={`flex shrink-0 cursor-pointer items-center justify-center text-[0.9rem] ${isDetails ? "w-8 !text-gray-400" : "w-4"}`}
           onClick={() =>
             countQuantity({
               defaultLoopQuantity: default_loop_quantity,

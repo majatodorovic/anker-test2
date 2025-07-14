@@ -115,10 +115,10 @@ const RenderSlider = ({ banners }) => {
               target={banner?.target ?? "_self"}
               className="absolute left-0 top-0 z-[49] h-full w-full bg-black bg-opacity-0 transition-all duration-500"
             >
-              <div className="absolute left-6 top-[200px] flex max-w-[320px] -translate-y-1/2 transform flex-col gap-5 text-left md:left-10 md:left-[70px] md:top-1/2">
+              <div className="absolute left-6 top-[80px] flex max-w-[320px] transform flex-col gap-5 text-left md:left-10 md:left-[70px] md:top-1/2 md:-translate-y-1/2">
                 {banner?.title && (
                   <h1
-                    className="text-base font-medium text-primary lg:text-lg"
+                    className="text-base font-black text-primary lg:text-lg"
                     dangerouslySetInnerHTML={{ __html: banner?.title }}
                   />
                 )}
@@ -148,13 +148,13 @@ const RenderSlider = ({ banners }) => {
         {banners?.map((banner, index) => (
           <div
             key={index}
-            className={`mx-1 flex h-1 w-[52px] cursor-pointer items-center justify-center`}
+            className={`mx-1 flex h-1 w-[24px] cursor-pointer items-center justify-center sm:w-[52px]`}
             onClick={() => handleSlideChange(index)}
           >
             <div
-              className={`h-1 w-[52px] rounded-full ${
+              className={`h-1 w-[24px] rounded-full sm:w-[52px] ${
                 currentSlide === index
-                  ? "!h-1 !w-[52px] bg-primary"
+                  ? "!h-1 !w-[24px] bg-primary sm:!w-[52px]"
                   : "bg-white"
               }`}
             />

@@ -8,6 +8,7 @@ export const CategoryPagination = ({
   data,
   setPage,
   generateQueryString = () => {},
+  withPagination = true,
 }) => {
   let query_string = generateQueryString();
 
@@ -29,9 +30,13 @@ export const CategoryPagination = ({
   };
 
   return (
-    <div className="mx-auto w-full bg-lightGray pb-[100px]">
+    <div className="mx-auto w-full bg-lightGray pb-20">
       <div className="sectionPaddingX">
-        <div className="flex w-full items-center gap-2 xl:pl-[350px]">
+        <div
+          className={`flex w-full items-center gap-2 ${
+            withPagination ? "xl:pl-[350px]" : ""
+          }`}
+        >
           {data.pagination.selected_page > 1 && (
             <Link
               href={handleQueryString(data.pagination.selected_page - 2)}

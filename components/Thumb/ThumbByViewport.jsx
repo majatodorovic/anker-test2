@@ -114,21 +114,16 @@ const ThumbByViewport = ({ id, is_details = false, apiLink, light }) => {
         </Swiper>
         {product?.price?.discount?.active ? (
           <div className="absolute right-5 top-5 z-[1] font-light text-white">
-            {product?.price?.discount?.campaigns?.map(
-              ({ calc: { original, price } }, index) => {
-                const discount = Math.round(
-                  ((Number(original) - Number(price)) / Number(original)) * 100,
-                );
-                return (
-                  <div
-                    key={index}
-                    className="bg-primary px-4 py-0.5 text-base 2xl:text-lg"
-                  >
-                    -{discount}%
-                  </div>
-                );
-              },
-            )}
+            <div className="bg-primary px-4 py-0.5 text-base 2xl:text-lg">
+              -
+              {Math.ceil(
+                ((product?.price?.price?.original -
+                  product?.price?.price?.discount) /
+                  product?.price?.price?.original) *
+                  100,
+              )}
+              %
+            </div>
           </div>
         ) : product?.price?.min?.price?.original &&
           product?.price?.min?.price?.discount ? (

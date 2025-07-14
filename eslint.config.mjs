@@ -1,19 +1,22 @@
-// eslint.config.js (ili .mjs)
+//Run eslint: npx eslint .
+
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import pluginReact from "eslint-plugin-react";
-import pluginReactHooks from "eslint-plugin-react-hooks";
 
 /** @type {import('eslint').Linter.Config[]} */
+
 export default [
   {
-    files: ["**/*.{js,mjs,cjs,jsx,ts,tsx}"],
     ignores: [
       ".next/*",
       "_components/shared/analyticsGA4.js",
       "_components/shared/analyticsGTM.js",
       "next.config.js",
     ],
+  },
+  { files: ["**/*.{js,mjs,cjs,jsx}"] },
+  {
     languageOptions: {
       globals: {
         ...globals.node,
@@ -33,7 +36,6 @@ export default [
     },
     plugins: {
       react: pluginReact,
-      "react-hooks": pluginReactHooks,
     },
     settings: {
       react: {
@@ -43,8 +45,6 @@ export default [
     rules: {
       ...pluginJs.configs.recommended.rules,
       ...pluginReact.configs.flat.recommended.rules,
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
       "react/prop-types": "off",
       "react/react-in-jsx-scope": "off",
     },

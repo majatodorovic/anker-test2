@@ -122,7 +122,7 @@ const Contact = ({ defaultMessage }) => {
           <div className={`mt-5 flex flex-col gap-2`}>
             <div className={`flex items-center gap-2`}>
               <i
-                className={`fa fa-map-marker w-5 text-[16px] text-[#04b400]`}
+                className={`fa fa-map-marker w-5 text-[16px] text-primary`}
               ></i>
               <span>
                 <span className={`font-bold`}>Adresa 1:</span>{" "}
@@ -130,7 +130,7 @@ const Contact = ({ defaultMessage }) => {
               </span>
             </div>
             <div className={`flex items-center gap-2`}>
-              <i className={`fa fa-phone w-5 text-[16px] text-[#04b400]`}></i>
+              <i className={`fa fa-phone w-5 text-[16px] text-primary`}></i>
               <span>
                 <span className={`font-bold`}>Kontakt telefon:</span>{" "}
                 <a href={`tel:${process.env.TELEPHONE}`}>
@@ -142,7 +142,7 @@ const Contact = ({ defaultMessage }) => {
         </div>
         <form
           onSubmit={handleSubmit}
-          className={`bg-lightGray col-span-3 mx-auto w-full border lg:col-span-2`}
+          className={`col-span-3 mx-auto w-full border bg-lightGray lg:col-span-2`}
         >
           <div className={`grid grid-cols-2 gap-5 p-2 lg:p-5`}>
             <div className={`col-span-2 flex flex-col lg:col-span-1`}>

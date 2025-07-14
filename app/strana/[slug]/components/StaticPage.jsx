@@ -28,22 +28,26 @@ const StaticPage = ({ data }) => {
             return (
               <div
                 key={keyGenerator("multiple_images")}
-                className="prose mx-auto w-[90%] !max-w-full leading-tight 2xl:w-[100%]"
+                className="leading-tight"
               >
                 {item?.content?.map((image) => (
                   <div
                     key={keyGenerator("image")}
-                    className="relative col-span-1 flex justify-center"
+                    className="w-full"
                   >
-                    <div
-                        className={`max-sm:h-[220px] sm:h-[350px] lg:h-[550px] 2xl:h-[800px]`}
-                      >
-                    <Image src={image?.file} alt={``} fill priority />
-                    </div>
+                    <Image
+                      src={image?.file}
+                      alt=""
+                      width={16}
+                      height={9}
+                      className="w-full h-auto object-cover"
+                      priority
+                    />
                   </div>
                 ))}
               </div>
             );
+          
 
           case "html_editor":
           case "textarea":

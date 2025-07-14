@@ -284,8 +284,11 @@ export const CategoryProducts = ({
               </div>
             </div>
           </div>
-          <div className="mx-auto w-full bg-lightGray pb-20 pt-10">
-            <div data-aos="fade-up" className={`sectionPaddingX xl:hidden`}>
+          <div className="mx-auto w-full bg-lightGray">
+            <div
+              data-aos="fade-up"
+              className={`sectionPaddingX pb-20 pt-10 xl:hidden`}
+            >
               <div
                 className={`grid grid-cols-1 gap-x-[20px] gap-y-[36px] sm:grid-cols-2 lg:grid-cols-3 2xl:mt-[50px]`}
               >

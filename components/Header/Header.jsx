@@ -188,7 +188,7 @@ const Header = () => {
                     onClick={resetActiveCategory}
                   >
                     <span
-                      className={`activeCategoryHover relative block w-fit text-[13px] text-black hover:after:-bottom-[30px] ${category?.name === "Novo" && "font-semibold text-primary"} ${category?.name === "Akcija" && "font-semibold"} ${
+                      className={`activeCategoryHover relative block w-fit text-[13px] text-black hover:after:-bottom-[30px] ${(category?.name === "Novo" || category?.name === "Akcija") && "font-semibold text-primary"} ${
                         pathname?.includes(category?.slug) && category?.id !== 0
                           ? "activeCategory after:-bottom-[30px]"
                           : pathname === category?.slug && category?.id === 0

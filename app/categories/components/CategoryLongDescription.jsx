@@ -14,7 +14,7 @@ export const CategoryLongDescription = ({ category_id }) => {
     return (
       <div className={`prose !max-w-full`}>
         <div
-          className="sectionPaddingX font-light 2xl:text-xl"
+          className="sectionPaddingX mt-10 font-light 2xl:text-xl"
           dangerouslySetInnerHTML={{ __html: long_description }}
         ></div>
       </div>

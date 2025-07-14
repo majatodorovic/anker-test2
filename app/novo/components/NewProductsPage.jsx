@@ -2,17 +2,51 @@
 import { Thumb } from "@/components/Thumb/Thumb";
 import Link from "next/link";
 import { useNewProducts } from "@/hooks/ecommerce.hooks";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import BreadcrumbsStatic from "../../../components/BreadcrumbsStatic/BreadcrumbsStatic";
+import { CategoryPagination } from "@/_pages/category/CategoryPagination";
 
 const NewProductsPage = () => {
-  const { data: newProducts } = useNewProducts(true);
+  let pagination_type = process.env.PAGINATION_TYPE;
+  const router = useRouter();
+  const params = useSearchParams();
+
+  const pageKey = Number(params?.get("strana"));
+  const [page, setPage] = useState(pageKey > 0 ? pageKey : 1);
+
+  const { data: newProducts } = useNewProducts(page, 12);
+
+  const updateURLQuery = (page) => {
+    // Build query string with proper separator logic
+    let parts = [];
+
+    if (page > 0) {
+      parts.push(`strana=${page}`);
+    }
+
+    // Join with & and add ? prefix
+    const query_string = parts.length > 0 ? `?${parts.join("&")}` : "";
+
+    return query_string;
+  };
+
+  useEffect(() => {
+    const query_string = updateURLQuery(page);
+    router.push(query_string, { scroll: false });
+  }, [page]);
+
+  const getPaginationArray = (selectedPage, totalPages) => {
+    const start = Math.max(1, selectedPage - 2);
+    const end = Math.min(totalPages, start + 4);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
   return (
     <>
       {newProducts?.items?.length > 0 && (
         <BreadcrumbsStatic
           breadcrumbs={[{ name: "Novo u ponudi" }]}
-          title={"Novo u ponudi"}
+          title={"Novo"}
         />
       )}
       <div
@@ -55,6 +89,23 @@ const NewProductsPage = () => {
           )}
         </div>
       </div>
+      {newProducts?.pagination?.total_pages > 1 &&
+        process.env.PAGINATION_TYPE === "pagination" && (
+          <CategoryPagination
+            generateQueryString={(targetPage = page) => {
+              const query_string = updateURLQuery(targetPage);
+              return query_string;
+            }}
+            data={{
+              pagination: newProducts.pagination,
+            }}
+            page={page}
+            slug="/novo"
+            setPage={setPage}
+            getPaginationArray={getPaginationArray}
+            withPagination={false}
+          />
+        )}
     </>
   );
 };

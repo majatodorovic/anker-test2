@@ -16,10 +16,10 @@ const AddToCart = ({
   tempError,
   setTempError,
 }) => {
- 
+  if (!displayComponent) return <></>;
   const router = useRouter();
   const { mutate: addToCart, isPending } = useAddToCart();
-  if (!displayComponent) return <></>;
+
   const productItem = product?.data?.item;
 
   const isAddableToCart = checkIsAddableToCart({

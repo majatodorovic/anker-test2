@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <div className="mx-auto mt-20 w-full bg-black pt-[70px] text-white lg:mt-[100px] 2xl:mt-[120px]">
       <div className="sectionPaddingX">
-        <div className="flex items-center justify-between border-b border-l-0 border-r-0 border-t-0 border-b-primary pb-6 max-xl:flex-col">
+        <div className="flex items-center justify-between border-b border-l-0 border-r-0 border-t-0 border-b-primary pb-6 max-xl:flex-col max-sm:items-start">
           <div className="flex items-center gap-20 max-xl:flex-col max-xl:gap-0">
             <div>
               <Link href={`/`}>
@@ -19,7 +19,7 @@ const Footer = () => {
                 />
               </Link>
             </div>
-            <div className="flex items-center max-xl:mt-10 max-sm:flex-col max-sm:gap-1 sm:gap-5">
+            <div className="flex items-center max-xl:mt-10 max-sm:flex-col max-sm:items-start max-sm:gap-1 sm:gap-5">
               <div className="flex flex-col">
                 <div>Pozovite nas:</div>
                 <a
@@ -44,9 +44,9 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-1 max-xl:mt-10 max-sm:flex-col sm:gap-5">
+          <div className="flex items-center gap-1 max-xl:mt-10 max-sm:flex-col max-sm:items-start sm:gap-5">
             <a
-              href="https://www.facebook.com/Anker.fans"
+              href="https://www.facebook.com/ankersrbija"
               target="_blank"
               rel="noreferrer"
               className="hover:text-primary"
@@ -84,7 +84,7 @@ const Footer = () => {
         </div>
         <div className="flex justify-between gap-10 pt-8 max-xl:flex-col 2xl:gap-20">
           <div className="flex w-full flex-col">
-            <div className="flex flex-wrap items-center gap-1 text-[15px] max-sm:flex-col">
+            <div className="flex flex-wrap items-center gap-1 text-[15px] max-sm:flex-col max-sm:items-start">
               <Link
                 href={`/strana/opsti-uslovi-poslovanja`}
                 className="hover:text-primary"

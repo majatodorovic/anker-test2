@@ -10,12 +10,15 @@ export default function Variants({
   displayComponent,
   setQuantity,
 }) {
-  // Hookovi uvek na početku komponente, pre uslova!
-  const [selected, setSelected] = useState([]);
+  if (!displayComponent) return null;
 
   let variant_options = product?.data?.variant_options;
   let variant_items = product?.data?.variant_items;
-
+  const [selected, setSelected] = useState([]); // niz selektovanih varianti
+  /*
+   *Iz selektovanih varianti stvara key. Proverava postoji li takav key u listi variant proizvoda
+   * Ako postoji, izbacuje tu variantu tj taj proizvod
+   **/
   const getCurrentProductFromPathname = (selectedItems) => {
     const currentItem = variant_items.find((item) => {
       const variant_key_array = item?.variant_key_array;
@@ -38,25 +41,21 @@ export default function Variants({
     return currentItem;
   };
 
+  // Ucitavanje inicijalnih vrednosti
   useEffect(() => {
-    // Ako nema komponenta za prikaz, ne radi ništa
-    if (!displayComponent) return;
-
-    // Ako se slug proizvoda već poklapa sa productSlug, ništa ne menja
     if (product?.data?.item?.slug === productSlug) return;
 
     let selected_item = variant_items.find((item) =>
       item.slug_path.includes(productSlug),
     );
 
-    if (selected.length === 0) {
+    if (selected.length == 0) {
       if (selected_item && product?.data?.item?.slug !== productSlug) {
         setSelected(selected_item.variant_key_array);
       }
 
-      if (product?.data?.item?.slug !== productSlug) {
+      if (product?.data?.item?.slug !== productSlug)
         setSelectedOptions(selected_item.variant_key_array);
-      }
 
       const currentItem = getCurrentProductFromPathname(
         selected_item.variant_key_array,
@@ -64,20 +63,9 @@ export default function Variants({
 
       setProductVariant(currentItem);
     }
-  }, [
-    displayComponent,
-    product?.data?.item?.slug,
-    productSlug,
-    selected.length,
-    setProductVariant,
-    setSelectedOptions,
-    variant_items,
-  ]);
+  }, []);
 
-  // Usled pravila React Hook-a, uslovni return je OVDE nakon hookova
-  if (!displayComponent) return null;
-
-  // Funkcija za menjanje selektovane varijante
+  // onChangeHandler funkcija za selektovanje variant nakon odabira vrednosti
   const onChangeHandler = (attribute_key, value_key) => {
     let temp_selected = [...selected];
 
@@ -87,7 +75,7 @@ export default function Variants({
     };
 
     let temp_index = temp_selected.findIndex(
-      (x) => x.attribute_key === temp_selected_item.attribute_key,
+      (x) => x.attribute_key == temp_selected_item.attribute_key,
     );
 
     if (temp_index > -1) {

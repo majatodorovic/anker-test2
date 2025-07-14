@@ -122,12 +122,12 @@ export const Thumb = forwardRef(
             <div className="absolute right-5 top-5 z-[1] font-light text-white">
               <div className="bg-primary px-4 py-0.5 text-base 2xl:text-lg">
                 -
-                {(
+                {Math.ceil(
                   ((product?.price?.price?.original -
                     product?.price?.price?.discount) /
                     product?.price?.price?.original) *
-                  100
-                ).toFixed(0)}
+                    100,
+                )}
                 %
               </div>
             </div>

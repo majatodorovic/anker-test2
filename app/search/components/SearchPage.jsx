@@ -1,25 +1,61 @@
 "use client";
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Thumb } from "../../../components/Thumb/Thumb";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearch } from "@/hooks/ecommerce.hooks";
 import BreadcrumbsStatic from "../../../components/BreadcrumbsStatic/BreadcrumbsStatic";
+import { CategoryPagination } from "@/_pages/category/CategoryPagination";
 
 const SearchPage = () => {
+  let pagination_type = process.env.PAGINATION_TYPE;
+  const router = useRouter();
   const params = useSearchParams();
 
   const search = params.get("search");
+  const pageKey = Number(params?.get("strana"));
+  const [page, setPage] = useState(pageKey > 0 ? pageKey : 1);
 
   const { data: returnedProducts, isFetching: loading } = useSearch({
     searchTerm: search,
     isSearchPage: true,
+    page,
+    limit: 12,
   });
+
+  const updateURLQuery = (page) => {
+    // Build query string with proper separator logic
+    let parts = [];
+
+    if (search) {
+      parts.push(`search=${search}`);
+    }
+
+    if (page > 0) {
+      parts.push(`strana=${page}`);
+    }
+
+    // Join with & and add ? prefix
+    const query_string = parts.length > 0 ? `?${parts.join("&")}` : "";
+
+    return query_string;
+  };
+
+  useEffect(() => {
+    const query_string = updateURLQuery(page);
+    router.push(query_string, { scroll: false });
+  }, [page]);
+
+  const getPaginationArray = (selectedPage, totalPages) => {
+    const start = Math.max(1, selectedPage - 2);
+    const end = Math.min(totalPages, start + 4);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
 
   return (
     <>
-      {returnedProducts?.length > 0 && !loading ? (
+      {returnedProducts?.items?.length > 0 && !loading ? (
         <>
           <BreadcrumbsStatic
             breadcrumbs={[{ name: "Pretraga", url: "/search" }]}
@@ -27,7 +63,7 @@ const SearchPage = () => {
           />
           <div className="sectionPaddingY mx-auto w-full bg-lightGray">
             <div className="sectionPaddingX grid grid-cols-1 gap-x-5 gap-y-[20px] sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-              {returnedProducts.map((product, index) => (
+              {returnedProducts?.items?.map((product, index) => (
                 <Suspense
                   key={index}
                   fallback={
@@ -41,6 +77,23 @@ const SearchPage = () => {
               ))}
             </div>
           </div>
+          {returnedProducts?.pagination?.total_pages > 1 &&
+            process.env.PAGINATION_TYPE === "pagination" && (
+              <CategoryPagination
+                generateQueryString={(targetPage = page) => {
+                  const query_string = updateURLQuery(targetPage);
+                  return query_string;
+                }}
+                data={{
+                  pagination: returnedProducts.pagination,
+                }}
+                page={page}
+                slug="/search"
+                setPage={setPage}
+                getPaginationArray={getPaginationArray}
+                withPagination={false}
+              />
+            )}
         </>
       ) : (
         !loading && (
