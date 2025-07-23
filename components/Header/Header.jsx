@@ -16,7 +16,7 @@ import {
 const Header = () => {
   const { data: categories } = useCategoryTree();
   const { data: landingPagesList } = useLandingPages();
-  const { data: newProducts } = useNewProducts(true);
+  const { data: newProducts } = useNewProducts(1, 10);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const { data: categoryProducts } = useCategoryProducts({
     slug: hoveredCategory?.slug,
