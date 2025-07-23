@@ -9,11 +9,12 @@ const DigitalProductInfo = ({
   digital_product,
   className = "md:max-w-[85%]",
 }) => {
-  if (!digital_product || digital_product?.items?.length < 1) return <></>;
-
   const [displayModal, setDisplayModal] = useState({
     display: false,
   });
+  if (!digital_product || digital_product?.items?.length < 1) return <></>;
+
+
   const videoExtensions = [".mp4", ".webm", ".ogg", ".mov", ".avi", ".mkv"];
 
   const items = digital_product.items.map((item) =>

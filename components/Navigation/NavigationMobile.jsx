@@ -26,7 +26,7 @@ const NavigationMobile = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [expandedCategory, setExpandedCategory] = useState(null);
+  const [expandedSubcategories, setExpandedSubcategories] = useState({});
   const [expandedBrands, setExpandedBrands] = useState(false);
 
   const handleSearch = (e) => {
@@ -100,18 +100,54 @@ const NavigationMobile = () => {
     { name: "Anker Solix", slug: "/brend/anker-solix" },
   ];
 
-  const handleCategoryClick = (category) => {
-    if (!category.children?.length) {
-      router.push(`/${category.slug}`);
+  const proizvodiCategory = {
+    id: "proizvodi",
+    name: "Proizvodi",
+    children: (categories ?? []).filter(
+      (category) => category?.name !== "Brendovi",
+    ),
+  };
+
+  const brendoviCategory = {
+    id: "brendovi",
+    name: "Brendovi",
+    children: brands,
+  };
+
+  const topNavItems = [
+    proizvodiCategory,
+    brendoviCategory,
+    ...categoriesMain.map((item) => ({
+      id: item.slug,
+      name: item.name,
+      slug: item.slug,
+      children: null,
+    })),
+  ];
+
+  const [expandedTopNav, setExpandedTopNav] = useState("proizvodi");
+
+  const handleTopNavClick = (item) => {
+    if (item.children && item.children.length > 0) {
+      setExpandedTopNav(expandedTopNav === item.id ? null : item.id);
+    } else if (item.slug) {
+      router.push(item.slug);
       setMenuOpen(false);
+    }
+  };
+
+  const handleSubcategoryClick = (subCategory) => {
+    if (!subCategory.children?.length) {
+      if (subCategory?.link?.link_path) {
+        router.push(`/${subCategory.link.link_path}`);
+        setMenuOpen(false);
+      }
       return;
     }
-
-    if (expandedCategory === category.id) {
-      setExpandedCategory(null);
-    } else {
-      setExpandedCategory(category.id);
-    }
+    setExpandedSubcategories((prev) => ({
+      ...prev,
+      [subCategory.id]: !prev[subCategory.id],
+    }));
   };
 
   const handleBrandsClick = () => {
@@ -275,127 +311,94 @@ const NavigationMobile = () => {
             </Link>
           </div>
         </div>
-
-        <div className="mx-auto mt-5 flex w-[95%] flex-col gap-3">
-          {(categories ?? [])
-            ?.filter((category) => category?.name !== "Brendovi")
-            ?.map((category) => {
-              const isExpanded = expandedCategory === category?.id;
-              return (
-                <div key={category?.id} className="flex flex-col">
-                  <div
-                    className="flex flex-row items-center justify-between"
-                    onClick={() => handleCategoryClick(category)}
-                  >
-                    <p
-                      className={
-                        isExpanded ? `text-base font-bold` : `text-base`
-                      }
-                    >
-                      {category?.name}
-                    </p>
-                    {category?.children?.length > 0 && (
-                      <Image
-                        src="/icons/right-chevron.png"
-                        width={16}
-                        height={16}
-                        alt="chevron"
-                        className={`h-auto w-4 transition-transform duration-300 ${
-                          isExpanded ? "rotate-90" : ""
-                        }`}
-                      />
-                    )}
-                  </div>
-                  {isExpanded && category?.children?.length > 0 && (
-                    <div className="ml-4 mt-3 flex flex-col gap-2">
-                      <Link
-                        href={`/${category?.link?.link_path}`}
-                        onClick={() => setMenuOpen(false)}
-                        className="text-base font-normal text-primary hover:text-primary/80"
-                      >
-                        Pogledajte sve
-                      </Link>
-                      {category.children.map((subCategory) => (
-                        <div
-                          key={subCategory.id}
-                          className="flex items-center justify-between"
-                          onClick={() => {
-                            if (subCategory?.link?.link_path) {
-                              router.push(`/${subCategory.link.link_path}`);
-                              setMenuOpen(false);
-                            }
-                          }}
-                        >
-                          <span className="text-base">{subCategory.name}</span>
-                          {subCategory?.children?.length > 0 && (
-                            <Image
-                              src="/icons/right-chevron.png"
-                              width={16}
-                              height={16}
-                              alt="chevron"
-                              className="h-auto w-4"
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-        </div>
-
-        <div className="mx-auto mt-3 flex w-[95%] flex-col border-t pt-3">
-          <div
-            className="flex flex-row items-center justify-between"
-            onClick={handleBrandsClick}
-          >
-            <p className={expandedBrands ? `text-base font-bold` : `text-base`}>
-              Brendovi
-            </p>
-            <Image
-              src="/icons/right-chevron.png"
-              width={16}
-              height={16}
-              alt="chevron"
-              className={`h-auto w-4 transition-transform duration-300 ${
-                expandedBrands ? "rotate-90" : ""
+        <div className="mx-auto mt-5 flex w-[95%] flex-row gap-1 border-b pb-1">
+          {topNavItems.map((item) => (
+            <div
+              key={item.id}
+              className={`cursor-pointer px-1 py-1 text-base text-black ${
+                expandedTopNav === item.id ? "font-bold" : ""
               }`}
-            />
-          </div>
-          {expandedBrands && (
-            <div className="ml-4 mt-3 flex flex-col gap-2">
-              {(brands ?? [])?.map((brand) => (
-                <Link
-                  key={brand?.name}
-                  onClick={() => {
-                    setMenuOpen(false);
-                  }}
-                  href={`${brand?.slug}`}
-                  className="text-base"
-                >
-                  {brand?.name}
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="mx-auto mt-3 flex w-[95%] flex-col gap-3 border-t pt-3">
-          {(categoriesMain ?? [])?.map((category) => (
-            <Link
-              key={category?.name}
-              onClick={() => {
-                setMenuOpen(false);
-              }}
-              href={`${category?.slug}`}
-              className={`text-base`}
+              onClick={() => handleTopNavClick(item)}
             >
-              {category?.name}
-            </Link>
+              {item.name}
+            </div>
           ))}
         </div>
+        {topNavItems.map((item) =>
+          expandedTopNav === item.id &&
+          item.children &&
+          item.children.length > 0 ? (
+            <div
+              key={item.id}
+              className="mx-auto mt-3 flex w-[95%] flex-col gap-2"
+            >
+              {item.id === "proizvodi" &&
+                item.children.map((cat) => {
+                  const isSubExpanded = expandedSubcategories[cat.id];
+                  return (
+                    <div key={cat.id} className="flex flex-col">
+                      <div
+                        className="flex cursor-pointer items-center justify-between"
+                        onClick={() => handleSubcategoryClick(cat)}
+                      >
+                        <span className="text-base">{cat.name}</span>
+                        {cat?.children?.length > 0 && (
+                          <Image
+                            src="/icons/right-chevron.png"
+                            width={16}
+                            height={16}
+                            alt="chevron"
+                            className={`h-auto w-4 transition-transform duration-300 ${
+                              isSubExpanded ? "rotate-90" : ""
+                            }`}
+                          />
+                        )}
+                      </div>
+                      {isSubExpanded && cat?.children?.length > 0 && (
+                        <div className="ml-4 mt-2 flex flex-col gap-2">
+                          {cat?.link?.link_path && (
+                            <Link
+                              href={`/${cat?.link?.link_path}`}
+                              onClick={() => setMenuOpen(false)}
+                              className="text-base font-normal text-primary hover:text-primary/80"
+                            >
+                              Pogledajte sve
+                            </Link>
+                          )}
+                          {cat.children.map((child) => (
+                            <div
+                              key={child.id}
+                              className="flex cursor-pointer items-center justify-between"
+                              onClick={() => {
+                                if (child?.link?.link_path) {
+                                  router.push(`/${child.link.link_path}`);
+                                  setMenuOpen(false);
+                                }
+                              }}
+                            >
+                              <span className="text-base">{child.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              {item.id === "brendovi" &&
+                item.children.map((brand) => (
+                  <Link
+                    key={brand.name}
+                    onClick={() => setMenuOpen(false)}
+                    href={`${brand.slug}`}
+                    className="text-base"
+                  >
+                    {brand.name}
+                  </Link>
+                ))}
+            </div>
+          ) : null,
+        )}
       </div>
-
       {menuOpen && (
         <div
           className="fixed left-0 top-0 z-[4000] h-screen w-screen bg-black bg-opacity-40"

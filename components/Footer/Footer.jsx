@@ -44,7 +44,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-1 max-xl:mt-10 max-sm:flex-col max-sm:items-start sm:gap-5">
+          <div className="flex flex-wrap items-center gap-1 max-xl:mt-10">
             <a
               href="https://www.facebook.com/ankersrbija"
               target="_blank"
@@ -53,7 +53,7 @@ const Footer = () => {
             >
               Facebook
             </a>
-            <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+            <div className="mx-2 h-3 w-[1px] bg-primary"></div>
             <a
               href="https://www.instagram.com/ankersrbija?igsh=OTBpOHZ2ZG0xZW9k"
               target="_blank"
@@ -62,7 +62,7 @@ const Footer = () => {
             >
               Instagram
             </a>
-            <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+            <div className="mx-2 h-3 w-[1px] bg-primary"></div>
             <a
               href="https://www.youtube.com/user/AnkerOceanwing"
               target="_blank"
@@ -71,7 +71,7 @@ const Footer = () => {
             >
               Youtube
             </a>
-            <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+            <div className="mx-2 h-3 w-[1px] bg-primary"></div>
             <a
               href="https://www.tiktok.com/discover/anker-srbija"
               target="_blank"
@@ -84,14 +84,14 @@ const Footer = () => {
         </div>
         <div className="flex justify-between gap-10 pt-8 max-xl:flex-col 2xl:gap-20">
           <div className="flex w-full flex-col">
-            <div className="flex flex-wrap items-center gap-1 text-[15px] max-sm:flex-col max-sm:items-start">
+            <div className="flex flex-wrap items-center gap-1 text-[15px]">
               <Link
                 href={`/strana/opsti-uslovi-poslovanja`}
                 className="hover:text-primary"
               >
                 Opšti uslovi poslovanja
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
 
               <Link
                 href={`/strana/opsti-uslovi-poslovanja#politika-reklamacija`}
@@ -99,28 +99,28 @@ const Footer = () => {
               >
                 Reklamacije
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
               <Link
                 href={`/strana/politika-privatnosti`}
                 className="hover:text-primary"
               >
                 Politika privatnosti
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
               <Link
                 href={`/strana/politika-kolacica`}
                 className="hover:text-primary"
               >
                 Politika kolačića
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
               <Link
                 href={`/strana/opsti-uslovi-poslovanja#pravo-na-odustajanje-od-ugovora`}
                 className="hover:text-primary"
               >
                 Pravo na odustajanje od ugovora
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
 
               <Link
                 href={`/strana/opsti-uslovi-poslovanja#politika-reklamacija`}
@@ -128,21 +128,21 @@ const Footer = () => {
               >
                 Zamena artikala
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
 
               <Link href={`/strana/kako-kupiti`} className="hover:text-primary">
                 Kako kupiti
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
 
               <Link href={`/strana/o-nama`} className="hover:text-primary">
                 O nama
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
               <Link href={`/kontakt`} className="hover:text-primary">
                 Kontakt
               </Link>
-              <div className="bg-primary sm:mx-2 sm:h-3 sm:w-[1px]"></div>
+              <div className="mx-2 h-3 w-[1px] bg-primary"></div>
               <Link href={`/sve-kategorije`} className="hover:text-primary">
                 Kategorije
               </Link>
@@ -164,7 +164,7 @@ const Footer = () => {
               </a>{" "}
               (po ceni lokalnog poziva).
             </p>
-            <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1">
               <a
                 href={`http://www.mastercard.com/rs/consumer/credit-cards.html`}
                 rel={"noreferrer"}

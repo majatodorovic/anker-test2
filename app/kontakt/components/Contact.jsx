@@ -138,6 +138,13 @@ const Contact = ({ defaultMessage }) => {
                 </a>
               </span>
             </div>
+            <div className={`flex items-center gap-2`}>
+              <i className={`fa fa-envelope w-5 text-[16px] text-primary`}></i>
+              <span>
+                <span className={`font-bold`}>Email:</span>{" "}
+                <a href={`mailto:${process.env.EMAIL}`}>{process.env.EMAIL}</a>
+              </span>
+            </div>
           </div>
         </div>
         <form
@@ -268,7 +275,7 @@ const Contact = ({ defaultMessage }) => {
                     <span className={`text-base`}>
                       Slažem se sa{" "}
                       <Link
-                        href={`/strana/uslovi-koriscenja`}
+                        href={`/strana/opsti-uslovi-poslovanja`}
                         className={`text-primary underline`}
                       >
                         uslovima korišćenja

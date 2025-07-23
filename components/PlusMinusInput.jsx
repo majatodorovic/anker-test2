@@ -22,7 +22,7 @@ const PlusMinusInput = ({
   maxAmount,
   isDetails,
 }) => {
-  if (!displayComponent) return <></>;
+  // **Hookovi se moraju pozivati uvek, ne uslovno!**
 
   const allow_decimals = behaviours?.display.allow_decimals;
   const default_loop_quantity = behaviours?.default_loop_quantity;
@@ -41,6 +41,7 @@ const PlusMinusInput = ({
   const intQuantity = allow_decimals ? quantity : Math.floor(quantity);
   const [tempValue, setTempValue] = useState(intQuantity);
   const [timeoutValue, setTimeoutValue] = useState(0);
+  const [config, setConfig] = useState();
 
   useEffect(() => {
     if (quantity === 0) return;
@@ -53,8 +54,6 @@ const PlusMinusInput = ({
       setTempValue(Number(maxAmount));
     }
   }, [quantity, maxAmount]);
-
-  const [config, setConfig] = useState();
 
   useEffect(() => {
     if (typeof document !== "undefined") {
@@ -159,6 +158,9 @@ const PlusMinusInput = ({
       setQuantity(Number(maxAmount));
     } else setTempValue(newValue);
   };
+
+  // **Ovde je ispravka — uslovni render unutar JSX, a ne uslovno vraćanje komponente pre hookova**
+  if (!displayComponent) return null;
 
   return (
     <div

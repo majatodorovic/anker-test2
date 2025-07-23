@@ -57,7 +57,8 @@ export const generateMetadata = async ({ params: { slug } }) => {
     },
     openGraph: {
       title: data?.social?.share_title ?? "Početna | Anker",
-      description: data?.social?.share_description ?? "Dobrodošli na Anker",
+      description:
+        data?.social?.share_description ?? "Dobrodošli na Anker",
       type: "website",
       images: [
         {

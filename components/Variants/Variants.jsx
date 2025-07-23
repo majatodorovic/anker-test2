@@ -10,15 +10,15 @@ export default function Variants({
   displayComponent,
   setQuantity,
 }) {
-  if (!displayComponent) return null;
-
+  // Hookovi MORAJU biti pozvani uvek, zato nema ranog return-a pre hookova
   let variant_options = product?.data?.variant_options;
   let variant_items = product?.data?.variant_items;
   const [selected, setSelected] = useState([]); // niz selektovanih varianti
+
   /*
-   *Iz selektovanih varianti stvara key. Proverava postoji li takav key u listi variant proizvoda
+   * Iz selektovanih varianti stvara key. Proverava postoji li takav key u listi variant proizvoda
    * Ako postoji, izbacuje tu variantu tj taj proizvod
-   **/
+   */
   const getCurrentProductFromPathname = (selectedItems) => {
     const currentItem = variant_items.find((item) => {
       const variant_key_array = item?.variant_key_array;
@@ -41,7 +41,7 @@ export default function Variants({
     return currentItem;
   };
 
-  // Ucitavanje inicijalnih vrednosti
+  // Učitavanje inicijalnih vrednosti
   useEffect(() => {
     if (product?.data?.item?.slug === productSlug) return;
 
@@ -49,7 +49,7 @@ export default function Variants({
       item.slug_path.includes(productSlug),
     );
 
-    if (selected.length == 0) {
+    if (selected.length === 0) {
       if (selected_item && product?.data?.item?.slug !== productSlug) {
         setSelected(selected_item.variant_key_array);
       }
@@ -65,7 +65,7 @@ export default function Variants({
     }
   }, []);
 
-  // onChangeHandler funkcija za selektovanje variant nakon odabira vrednosti
+  // onChangeHandler funkcija za selektovanje varijante nakon odabira vrednosti
   const onChangeHandler = (attribute_key, value_key) => {
     let temp_selected = [...selected];
 
@@ -75,7 +75,7 @@ export default function Variants({
     };
 
     let temp_index = temp_selected.findIndex(
-      (x) => x.attribute_key == temp_selected_item.attribute_key,
+      (x) => x.attribute_key === temp_selected_item.attribute_key,
     );
 
     if (temp_index > -1) {
@@ -95,6 +95,9 @@ export default function Variants({
       setTempError(null);
     }
   };
+
+  // Uslovni prikaz komponente - ako nije za prikaz, vrati null
+  if (!displayComponent) return null;
 
   return (
     <div className="flex w-full gap-10 md:gap-4">

@@ -74,7 +74,6 @@ export const Thumb = forwardRef(
         className="group relative col-span-1 flex h-full flex-col items-stretch"
       >
         <div className={`relative !aspect-square w-full overflow-hidden`}>
-          <div className="absolute left-0 top-0 z-10 h-1 w-full bg-primary opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           <Swiper
             modules={[Navigation, Pagination]}
             rewind
