@@ -21,6 +21,7 @@ export const CategoryProducts = ({
   slug,
   isSection,
 }) => {
+  console.log("Slug u CategoryProducts:", slug);
   let pagination_type = process.env.PAGINATION_TYPE;
 
   const router = useRouter();
