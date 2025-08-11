@@ -139,7 +139,7 @@ export const CheckoutData = ({
     if (isCheckoutSuccess && checkOutData) {
       switch (true) {
         case Boolean(checkOutData?.payment_provider_data?.form) === false:
-          return router.push(`/korpa/kupovina/${data?.order?.order_token}`);
+          return router.push(`/korpa/kupovina/${checkOutData?.order?.order_token}`);
         case Boolean(checkOutData?.payment_provider_data?.form) === true:
           return handleCreditCard(checkOutData);
         default:
@@ -147,6 +147,7 @@ export const CheckoutData = ({
       }
     }
   }, [isCheckoutSuccess, checkOutData, router]);
+  
 
   useEffect(
     () => {
