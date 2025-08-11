@@ -9,18 +9,39 @@ import "swiper/css/zoom";
 import { FreeMode, Navigation, Pagination, Thumbs, Zoom } from "swiper/modules";
 import Image from "next/image";
 import { convertHttpToHttps } from "@/helpers/convertHttpToHttps";
-import { useSearchParams } from "next/navigation";
 import { getCurrentGalleryByVariantKeys } from "@/components/ProductDetails/helpers/gallery";
+import { useProductStickers } from "@/hooks/ecommerce.hooks";
 
-export const ProductGallery = ({ productGallery, variantKeyArray }) => {
+export const ProductGallery = ({ id, productGallery, variantKeyArray }) => {
+  const { data: productStickers } = useProductStickers({ id });
+
+  let variantKeyString = "";
+  variantKeyArray?.forEach((item, index) => {
+    variantKeyString += `${item.attribute_key}:${item.value_key}`;
+    if (index + 1 !== variantKeyArray?.length) variantKeyString += ";";
+  });
+
+  const currentGallery = variantKeyArray
+    ? getCurrentGalleryByVariantKeys({
+        variantKeyString,
+        productGallery,
+      })
+    : [];
+
   const [activeIndex, setActiveIndex] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [gallery, setGallery] = useState(
-    productGallery?.gallery.length > 0
-      ? productGallery?.gallery
+    productGallery?.gallery?.length > 0
+      ? currentGallery && currentGallery.length > 0
+        ? currentGallery
+        : productGallery?.gallery
       : [
           {
-            image: "/images/placeholder.jpg",
+            image_data: {
+              url: "/images/placeholder.jpg",
+              description: {
+                alt: "promobi-logo-thumb",
+              },
+            },
           },
         ],
   );
@@ -39,9 +60,6 @@ export const ProductGallery = ({ productGallery, variantKeyArray }) => {
       }
     }
   }, [variantKeyArray]);
-
-  const params = useSearchParams();
-  const color = params?.get("color");
 
   function ImageMagnifier({
     src,
@@ -65,6 +83,30 @@ export const ProductGallery = ({ productGallery, variantKeyArray }) => {
         className="aspect-square h-full w-full object-cover"
         onClick={onClick}
       >
+        {productStickers && productStickers?.length > 0 && (
+          <div className="absolute right-1 top-1 flex w-full flex-row justify-end">
+            {productStickers.map((sticker, index) => {
+              if (sticker?.image) {
+                return (
+                  <Image
+                    src={sticker?.image}
+                    alt={sticker?.title}
+                    className={`z-10 ml-2 h-10 w-auto object-cover`}
+                    width={0}
+                    height={0}
+                    key={index}
+                  />
+                );
+              } else {
+                return (
+                  <div className={`bg-[#e30613] px-2.5 py-0.5`}>
+                    <p className={`text-white`}>{sticker?.name}</p>
+                  </div>
+                );
+              }
+            })}
+          </div>
+        )}
         <Image
           src={src}
           width={0}
@@ -128,9 +170,9 @@ export const ProductGallery = ({ productGallery, variantKeyArray }) => {
         className="relative w-full overflow-hidden border border-secondary bg-secondary"
       >
         <ImageMagnifier
-          src={convertHttpToHttps(image?.image)}
+          src={convertHttpToHttps(image?.image_data?.url)}
           onClick={() => {
-            setModalImage(image?.image);
+            setModalImage(image?.image_data?.url);
           }}
           className="bg-secondary"
         />
@@ -144,8 +186,14 @@ export const ProductGallery = ({ productGallery, variantKeyArray }) => {
         className={`!aspect-square max-w-[120px] !overflow-hidden border border-secondary bg-secondary`}
       >
         <Image
-          src={convertHttpToHttps(image?.image)}
-          alt={image?.image_data?.description?.alt || "Croonus Shop"}
+          src={convertHttpToHttps(image?.image_data?.url)}
+          alt={
+            image?.image_data?.description?.alt
+              ? image?.image_data?.description?.alt
+              : image?.image_data?.file_data?.filename
+                ? image?.image_data?.file_data?.filename
+                : "croonus shop"
+          }
           width={120}
           height={120}
           priority={true}
@@ -161,26 +209,6 @@ export const ProductGallery = ({ productGallery, variantKeyArray }) => {
   });
 
   const [swiper, setSwiper] = useState(null);
-
-  useEffect(() => {
-    if (color) {
-      setLoading(true);
-      const newImages = productGallery?.gallery?.filter((item) =>
-        item?.variant_key?.includes(color),
-      );
-
-      const nonVariantImages = productGallery.gallery?.filter(
-        (item) => item?.variant_key_array?.length === 0,
-      );
-
-      setGallery([...newImages, ...nonVariantImages]);
-    }
-    if (productGallery?.gallery?.length) {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-    }
-  }, [color]);
 
   const mainSliderRef = useRef(null);
 
@@ -249,13 +277,8 @@ export const ProductGallery = ({ productGallery, variantKeyArray }) => {
           },
         }}
       >
-        {loading ? (
-          <SwiperSlide>
-            <div className="aspect-square h-full w-full animate-pulse bg-gray-200"></div>
-          </SwiperSlide>
-        ) : (
-          <>{productImage}</>
-        )}
+        {productImage}
+
         <div className={`absolute right-2 top-2 z-50 flex flex-col gap-1`}>
           {productGallery?.stickers?.length > 0 &&
             productGallery?.stickers?.map((sticker, stickerIndex) => {
@@ -357,7 +380,7 @@ export const ProductGallery = ({ productGallery, variantKeyArray }) => {
                 minRatio: 1,
               }}
               initialSlide={gallery?.findIndex(
-                (item) => item?.image === modalImage,
+                (item) => item?.image_data?.url === modalImage,
               )}
               className={`modalSwiper swiper-zoom-container h-full w-full`}
               breakpoints={{
@@ -382,9 +405,13 @@ export const ProductGallery = ({ productGallery, variantKeyArray }) => {
                   >
                     <div className="swiper-zoom-container">
                       <Image
-                        src={image?.image}
+                        src={convertHttpToHttps(image?.image_data?.url)}
                         alt={
-                          image?.image_data?.description?.alt || "Croonus shop"
+                          image?.image_data?.description?.alt
+                            ? image?.image_data?.description?.alt
+                            : image?.image_data?.file_data?.filename
+                              ? image?.image_data?.file_data?.filename
+                              : "croonus shop"
                         }
                         fill
                         sizes="100vw"

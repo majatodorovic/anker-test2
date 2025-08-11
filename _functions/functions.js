@@ -26,8 +26,8 @@ export const handleCategoryRobots = (strana, filteri, sort, viewed, robots) => {
   }
 };
 
-export const generateProductSchema = (product, product_gallery, canonical) => {
-  if (product && product_gallery) {
+export const generateProductSchema = (product, gallery, canonical) => {
+  if (product && gallery) {
     const {
       data: {
         item: {
@@ -42,7 +42,6 @@ export const generateProductSchema = (product, product_gallery, canonical) => {
         },
       },
     } = product;
-    const { gallery } = product_gallery;
 
     const min_defined = price?.min?.price_defined;
     const max_defined = price?.max?.price_defined;
@@ -83,7 +82,7 @@ export const generateProductSchema = (product, product_gallery, canonical) => {
       "@context": "https://schema.org/",
       "@type": "Product",
       name: name,
-      image: gallery?.[0]?.image,
+      image: gallery?.[0]?.image_data?.url,
       sku: sku,
       offers: {
         "@type": "Offer",
@@ -128,7 +127,7 @@ export const generateOrganizationSchema = (base_url) => {
     name: default_data?.name,
     url: `${base_url}`,
     logo: `${base_url}/logo.png`,
-    sameAs: ["https://www.instagram.com/lifeatcroonus/"],
+    sameAs: ["https://www.instagram.com/ankersrbija/"],
     telephone: default_data?.telephone,
     email: default_data?.email,
     address: {

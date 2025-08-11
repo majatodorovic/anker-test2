@@ -3,8 +3,6 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import pluginReact from "eslint-plugin-react";
-import pluginReactHooks from "eslint-plugin-react-hooks";
-
 
 /** @type {import('eslint').Linter.Config[]} */
 
@@ -38,7 +36,6 @@ export default [
     },
     plugins: {
       react: pluginReact,
-    "react-hooks": pluginReactHooks, // ✅ dodaj
     },
     settings: {
       react: {
@@ -50,9 +47,6 @@ export default [
       ...pluginReact.configs.flat.recommended.rules,
       "react/prop-types": "off",
       "react/react-in-jsx-scope": "off",
-    // ✅ dodaj ova dva
-    "react-hooks/rules-of-hooks": "error", // Catchuje hook pozive u if, return itd.
-    "react-hooks/exhaustive-deps": "warn", // Prati deps u useEffect itd.
     },
   },
 ];

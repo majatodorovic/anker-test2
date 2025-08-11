@@ -13,18 +13,19 @@ import Image from "next/image";
  */
 
 const ApiPagination = ({ pagination }) => {
-  const [currentPage, setCurrentPage] = useState(() => pagination?.selected_page || 1);
+  if (!pagination) return false;
+
+  const { selected_page, total_pages, total_items, items_per_page } =
+    pagination;
+
+  if (total_pages < 2) return false;
+
+  const [currentPage, setCurrentPage] = useState(selected_page);
 
   useEffect(() => {
-    if (pagination) {
-      setCurrentPage(pagination.selected_page);
-    }
-  }, [pagination?.selected_page, pagination?.total_pages, pagination?.total_items, pagination?.items_per_page]);
+    setCurrentPage(selected_page);
+  }, [selected_page, total_pages, total_items, items_per_page]);
 
-  // Ako nema paginacije ili je samo jedna stranica, ne prikazuj paginaciju
-  if (!pagination || pagination.total_pages < 2) return null;
-
-  const { total_pages } = pagination;
   // Updates the current page state and modifies the URL with the new page parameter.
   const handlePageChange = (page) => {
     if (page < 1 || page > total_pages) return;

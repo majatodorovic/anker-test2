@@ -1,9 +1,12 @@
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { icons } from "@/_lib/icons";
 
-export const useActiveTab = () => {
+export const getActiveTab = () => {
   const params = useSearchParams();
-  return params?.get("tab") || "dashboard";
+  let active_tab = params?.get("tab") || "dashboard";
+
+  return active_tab;
 };
 
 export const useTabChange = () => {
@@ -13,7 +16,9 @@ export const useTabChange = () => {
     router.push(`?tab=${tab}`);
   };
 
-  return handleTabChange;
+  return (tab) => {
+    handleTabChange(tab);
+  };
 };
 
 export const handleClick = (tab, mutate, logout, handleTabChange) => {

@@ -1,4 +1,4 @@
-import { get, list } from "@/api/api";
+import { get, list, fetch } from "@/api/api";
 import ProductContainer from "./ProductContainer";
 import { notFound } from "next/navigation";
 import { generateProductSchema } from "@/_functions";
@@ -16,7 +16,7 @@ const ProductLayout = async ({ path, category_id, id, canonical }) => {
     return notFound();
   }
 
-  const product_gallery = await get(`/product-details/gallery/${id}`);
+  const product_gallery = await fetch(`/product-details/gallery/${id}`);
 
   const isDigitalProduct = product_basicData
     ? product_basicData?.payload?.data?.item?.digital_data?.is_digital

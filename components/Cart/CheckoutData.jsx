@@ -7,8 +7,6 @@ import {
   useIsLoggedIn,
   useGetAccountData,
   useCartBadge,
-  useForm,
-  useLogin,
 } from "@/hooks/ecommerce.hooks";
 import { handleCreditCard, handleSetData } from "@/components/Cart/functions";
 import { useRouter } from "next/navigation";
@@ -22,6 +20,7 @@ import CheckoutButton from "@/components/Cart/CheckoutButton";
 import NoStockModal from "@/components/Cart/NoStockModal";
 import GeneralTermsOfUseField from "@/components/Cart/GeneralTermsOfUseField";
 import { filterOutProductsOutOfStock } from "@/components/Cart/helper/outOfStock";
+import { useForm, useLogin } from "@/hooks/ecommerce.hooks";
 import {
   Form,
   handleInputChange,
@@ -63,24 +62,10 @@ export const CheckoutData = ({
 }) => {
   const router = useRouter();
   const { data: cartCount } = useCartBadge();
-  const { loggedIn: userLoggedIn } = useContext(userContext);
-
-  // Ovde pozivamo hook-ove UVEK bez uslova:
-  const { data: billing_addresses } = useBillingAddresses();
-  const { data: user_billing_addresses } = useGetAccountData({
-    api: `/customers/billing-address`,
-    method: "list",
-  });
-
-  // Koristimo podatke samo ako je korisnik ulogovan:
-  const billingAddressesData = userLoggedIn ? billing_addresses : [];
-  const userBillingAddressesData = userLoggedIn ? user_billing_addresses : [];
-
   const [selected, setSelected] = useState({
     id: null,
     use_same_data: true,
   });
-
   const {
     data: dataLogin,
     setErrors,
@@ -92,14 +77,22 @@ export const CheckoutData = ({
   });
   const { mutate: login, isPending: isPendingLogin } = useLogin();
 
+  const { loggedIn: userLoggedIn } = useContext(userContext);
+
   const { data: loggedIn } = useIsLoggedIn();
 
+  const { data: billing_addresses } = userLoggedIn ? useBillingAddresses() : [];
+
+  const { data: user_billing_addresses } = userLoggedIn
+    ? useGetAccountData({ api: `/customers/billing-address`, method: "list" })
+    : [];
+
   const { data: form, isLoading } = useGetAddress(
-    billingAddressesData?.length > 1 && selected?.id
+    billing_addresses?.length > 1 && selected?.id
       ? selected?.id
-      : billingAddressesData?.[0]?.id,
+      : billing_addresses?.[0]?.id,
     "billing",
-    loggedIn && Boolean(billingAddressesData?.length),
+    loggedIn && Boolean(billing_addresses?.length),
   );
 
   const [postErrors, setPostErrors] = useState({
@@ -119,7 +112,7 @@ export const CheckoutData = ({
   });
 
   useEffect(() => {
-    const defaultAddress = userBillingAddressesData?.items?.find(
+    const defaultAddress = user_billing_addresses?.items?.find(
       (address) => address.set_default === 1,
     );
     if (defaultAddress) {
@@ -129,7 +122,7 @@ export const CheckoutData = ({
         id: billing_id,
       }));
     }
-  }, [userBillingAddressesData?.items]);
+  }, [user_billing_addresses?.items]);
 
   useEffect(() => {
     if (items && !isClosed) {
@@ -146,14 +139,14 @@ export const CheckoutData = ({
     if (isCheckoutSuccess && checkOutData) {
       switch (true) {
         case Boolean(checkOutData?.payment_provider_data?.form) === false:
-          return router.push(`/korpa/kupovina/${dataTmp?.order?.order_token}`);
+          return router.push(`/korpa/kupovina/${data?.order?.order_token}`);
         case Boolean(checkOutData?.payment_provider_data?.form) === true:
           return handleCreditCard(checkOutData);
         default:
           break;
       }
     }
-  }, [isCheckoutSuccess, checkOutData, router, dataTmp]);
+  }, [isCheckoutSuccess, checkOutData, router]);
 
   useEffect(
     () => {
@@ -161,7 +154,8 @@ export const CheckoutData = ({
         handleSetData("default_data", form, dataTmp, setDataTmp);
       }
     },
-    [selected?.id, form, isLoading],
+    [selected?.id, form?.[0]],
+    isLoading,
   );
 
   useEffect(() => {

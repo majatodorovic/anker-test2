@@ -39,8 +39,32 @@ export default async function RootLayout({ children }) {
           href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
         />
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        <Script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+
+})(window,document,'script','dataLayer','${process.env.GTM_ID}');`,
+          }}
+        />
       </head>
       <body className="relative">
+        <noscript>
+          <iframe
+            src={`"https://www.googletagmanager.com/ns.html?id=${process.env.GTM_ID}`}
+            height="0"
+            width="0"
+            style={{
+              display: "none",
+              visibility: "hidden",
+            }}
+          ></iframe>
+        </noscript>
         <QueryProvider>
         <AOSContainer>
           <UserProvider>
@@ -68,17 +92,17 @@ export const metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-  title: "Početna | Anker",
-  description: "Dobrodošli na Anker",
+  title: "Sve kategorije - Anker Srbija",
+  description: " Istražite sve kategorije: od punjača i kablova do bežičnih zvučnika i pametnih dodataka. Pronađite idealan uređaj za sebe!",
   robots: {
     index: true,
     follow: true,
   },
   openGraph: {
-    title: "Početna | Anker",
-    description: "Dobrodošli na Anker Online Shop",
+    title: "Sve kategorije - Anker Srbija",
+    description: " Istražite sve kategorije: od punjača i kablova do bežičnih zvučnika i pametnih dodataka. Pronađite idealan uređaj za sebe!",
     type: "website",
-    url: "https://www.ankersrbija.rs/",
+    url: "https://www.ankersrbija.rs/sve-kategorije",
     siteName: "Anker Srbija",
     images: [
       {
@@ -89,5 +113,8 @@ export const metadata = {
       },
     ],
     locale: "sr_RS",
+  },
+  alternates: {
+    canonical: "https://www.ankersrbija.rs/sve-kategorije",
   },
 };
